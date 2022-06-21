@@ -1,0 +1,4 @@
+DirectoryIndex disabled
+RewriteEngine on
+RewriteBase /
+RewriteRule ^(.*) http://localhost:{{glauth_port}}/$1 [proxy,last]

@@ -13,17 +13,17 @@
   #################################
   ## create directories
   #################################
+  - name: create directory bin
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    file:
+      path: "/home/pacs/{{pac}}/users/{{user}}/bin"
+      state: directory
   - name: create directory etc
     become: yes
     become_user: "{{pac}}-{{user}}"
     file:
       path: "/home/pacs/{{pac}}/users/{{user}}/etc"
-      state: directory
-  - name: create directory var/tmp
-    become: yes
-    become_user: "{{pac}}-{{user}}"
-    file:
-      path: "/home/pacs/{{pac}}/users/{{user}}/var/tmp"
       state: directory
   - name: create directory var/log
     become: yes
@@ -38,38 +38,30 @@
       path: "/home/pacs/{{pac}}/users/{{user}}/var/run"
       state: directory
 
-  #################################
-  ## install requirements
-  #################################
-  - name: Install node.js
-    import_tasks: tasks/hs_nodejs.yml
-
-  - name: Install ruby
-    import_tasks: tasks/hs_ruby.yml
-
   ##################################
   ## install glauth
   ##################################
 
-  # TODO
+  - name: install glauth
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    shell: |
+      wget --no-verbose -O gitea https://github.com/glauth/glauth/releases/download/{{glauth_release}}/linuxamd64.zip || exit -1
+      unzip linuxamd64.zip || exit -1
+      rm -f linuxamd64.zip || exit -1
+      chmod +x glauth64 || exit -1
+    args:
+      executable: /bin/bash
+      chdir: "/home/pacs/{{pac}}/users/{{user}}"
+      creates: "/home/pacs/{{pac}}/users/{{user}}/glauth64"
 
   ##################################
   ## configuration
   ##################################
-
-  # TODO
-
-  ######################
-  ## initialise instance
-  ######################
-
-  # TODO
-
-  ########################
-  ## setup the apache site
-  ########################
-
-  # TODO
+  - name: upload glauth configuration
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    template: dest="/home/pacs/{{pac}}/users/{{user}}/etc/glauth.cfg" src="templates/glauth.cfg" mode=0600
 
   ####################################
   ## install cron jobs
