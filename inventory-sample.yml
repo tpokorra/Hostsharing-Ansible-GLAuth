@@ -7,8 +7,10 @@ glauth:
       domain: glauth.example.org
       user: glauth
       password: testpassw0rd_changeme
+      basedn: dc=glauth,dc=com
 
-      glauth_port: 11111
+      ldap_port: 11111
+      ldaps_port: 11112
       random_minute: 12
 
       # see https://github.com/glauth/glauth/releases

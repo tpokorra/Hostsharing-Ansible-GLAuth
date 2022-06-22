@@ -31,9 +31,11 @@ The option -i can be used to read this inventory file instead of the /etc/ansibl
 
     $ ansible-playbook -i inventory.yml playbook-install.yml
 
-Now we can reach our site via:
+Now we can connect with ldapsearch locally:
 
-    https://glauth.example.org
+    ldapsearch  -H ldap://127.0.0.1:11111 -D cn=hackers,ou=superheros,dc=glauth,dc=com -w dogood -b dc=glauth,dc=com cn=hackers
+    ldapsearch  -H ldap://127.0.0.1:11111 -D cn=serviceuser,ou=svcaccts,dc=glauth,dc=com -w mysecret -b dc=glauth,dc=com cn=hackers
+   
 
 --- Open Source Hosting ---
  https://www.hostsharing.net

@@ -63,6 +63,11 @@
     become_user: "{{pac}}-{{user}}"
     template: dest="/home/pacs/{{pac}}/users/{{user}}/etc/glauth.cfg" src="templates/glauth.cfg" mode=0600
 
+  - name: upload demodata cfg file
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    template: dest="/home/pacs/{{pac}}/users/{{user}}/etc/demodata.cfg" src="templates/demodata.cfg" mode=0600
+
   ##################################
   ## other software configuration
   ##################################
@@ -84,6 +89,33 @@
     become: yes
     become_user: "{{pac}}-{{user}}"
     template: dest="/home/pacs/{{pac}}/users/{{user}}/bin" src="templates/glauth-stop.sh" mode=0700
+
+  ##################################
+  ## initialize the database
+  ##################################
+  # TODO: somehow this does not work, I get: result: 50 Insufficient access
+  # If this is enabled, change the -c parameter in glauth-start.sh to point to the glauth.cfg file, not to the directory which contains then the .sql file
+  #- name: upload pgpass file
+  #  become: yes
+  #  become_user: "{{pac}}-{{user}}"
+  #  template: dest="/home/pacs/{{pac}}/users/{{user}}/.pgpass" src="templates/pgpass" mode=0600
+  #- name: upload demodata sql file
+  #  become: yes
+  #  become_user: "{{pac}}-{{user}}"
+  #  template: dest="/home/pacs/{{pac}}/users/{{user}}/etc/demodata.sql" src="templates/demodata.sql" mode=0600
+  #- name: initialize database
+  #  become: yes
+  #  become_user: "{{pac}}-{{user}}"
+  #  shell: |
+  #    bin/glauth-start.sh || exit -1
+  #    sleep 10
+  #    bin/glauth-stop.sh || exit -1
+  #    psql --user {{pac}}_{{user}} < etc/demodata.sql || exit -1
+  #    touch .ansible_db_initialized
+  #  args:
+  #    executable: /bin/bash
+  #    chdir: "/home/pacs/{{pac}}/users/{{user}}/"
+  #    creates: "/home/pacs/{{pac}}/users/{{user}}/.ansible_db_initialized"
 
   ####################################
   ## install cron jobs
